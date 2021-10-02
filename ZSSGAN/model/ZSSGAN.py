@@ -19,7 +19,7 @@ def requires_grad(model, flag=True):
         p.requires_grad = flag
 
 class SG2Generator(torch.nn.Module):
-    def __init__(self, checkpoint_path, latent_size=512, map_layers=8, img_size=256, channel_multiplier=2, device='cuda:0'):
+    def __init__(self, checkpoint_path, latent_size=512, map_layers=8, img_size=256, channel_multiplier=2, device='cpu'):
         super(SG2Generator, self).__init__()
 
         self.generator = Generator(
@@ -104,7 +104,7 @@ class SG2Generator(torch.nn.Module):
         return self.generator(styles, return_latents=return_latents, truncation=truncation, truncation_latent=self.mean_latent, noise=noise, randomize_noise=randomize_noise, input_is_latent=input_is_latent, input_is_s_code=input_is_s_code)
 
 class SG2Discriminator(torch.nn.Module):
-    def __init__(self, checkpoint_path, img_size=256, channel_multiplier=2, device='cuda:0'):
+    def __init__(self, checkpoint_path, img_size=256, channel_multiplier=2, device='cpu'):
         super(SG2Discriminator, self).__init__()
 
         self.discriminator = Discriminator(
@@ -150,7 +150,7 @@ class ZSSGAN(torch.nn.Module):
 
         self.args = args
 
-        self.device = 'cuda:0'
+        self.device = 'cpu'
 
         # Set up frozen (source) generator
         self.generator_frozen = SG2Generator(args.frozen_gen_ckpt, img_size=args.size).to(self.device)
